@@ -14,7 +14,8 @@ int main(){
     Student data[10];
 
     for(int i = 0; i < 10; i++){
-        cout << "\nEnter the name of the student: ";
+        cout<<"Student"<<i+1<<endl;
+        cout << "\nEnter the name of the student as (name_surename): ";
         cin >> data[i].name;
 
         for(int j = 0; j < strlen(data[i].name); j++){
