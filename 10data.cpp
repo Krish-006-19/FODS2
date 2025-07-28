@@ -1,6 +1,5 @@
 #include<iostream>
 #include<cstring>
-#include<string>
 using namespace std;
 
 struct Student {
@@ -25,8 +24,9 @@ while (!validName) {
     validName = true;
     int len = strlen(data[i].name);
 
+    // Check allowed characters
     for (int j = 0; j < len; j++) {
-        string c = data[i].name[j];
+        char c = data[i].name[j];
         if (!((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == '_')) {
             cout << "Invalid character in name. Only letters and underscore allowed.\n";
             validName = false;
@@ -35,7 +35,8 @@ while (!validName) {
     }
 
     if (validName) {
-        for (int k = 0; k < i; k++) {
+        // Check for duplicates with previously entered students
+        for (int k = 0; k < i; k++) {   // only check previous students, not including current i
             if (strcmp(data[i].name, data[k].name) == 0) {
                 cout << "Repeated name. Please enter a unique name.\n";
                 validName = false;
@@ -44,6 +45,7 @@ while (!validName) {
         }
     }
 }
+
 
  bool validRollno = false;
         while (!validRollno) {
