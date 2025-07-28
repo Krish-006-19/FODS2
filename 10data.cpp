@@ -1,5 +1,6 @@
 #include<iostream>
 #include<cstring>
+#include<string>
 using namespace std;
 
 struct Student {
@@ -16,22 +17,35 @@ int main() {
     for(int i = 0; i < 10; i++) {
         cout << "Student " << i + 1 << endl;
         
-        bool validName = false;
-        while (!validName) {
-            cout << "\nEnter the name of the student as (name_surename): ";
-            cin >> data[i].name;
-            
-            validName = true;
-            for(int j = 0; j < strlen(data[i].name); j++) {
-                if(data[i].name[j] >= '!' && data[i].name[j] <= '@') {
-                    cout << "Invalid name. Please enter a valid name.\n";
-                    validName = false;
-                    break;
-                }
+bool validName = false;
+while (!validName) {
+    cout << "\nEnter the name of the student as (name_surname): ";
+    cin >> data[i].name;
+
+    validName = true;
+    int len = strlen(data[i].name);
+
+    for (int j = 0; j < len; j++) {
+        string c = data[i].name[j];
+        if (!((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == '_')) {
+            cout << "Invalid character in name. Only letters and underscore allowed.\n";
+            validName = false;
+            break;
+        }
+    }
+
+    if (validName) {
+        for (int k = 0; k < i; k++) {
+            if (strcmp(data[i].name, data[k].name) == 0) {
+                cout << "Repeated name. Please enter a unique name.\n";
+                validName = false;
+                break;
             }
         }
+    }
+}
 
-        bool validRollno = false;
+ bool validRollno = false;
         while (!validRollno) {
             cout << "\nEnter the rollno: ";
             cin >> data[i].rollno;
@@ -43,6 +57,15 @@ int main() {
                     break;
                 }
             }
+                        for(int k = 0;k<i+1;k++){
+                for(int p = 1;p<=i+1;p++){
+                        if((!strcmp(data[k].rollno,data[p].rollno))&& k!= p){
+                            cout << "Repeated rollno. Please enter a unique rollno.\n";
+                            validRollno = false;
+                            break;
+                        }
+                    }
+                }
         }
 
         bool validMarks = false;
@@ -56,30 +79,79 @@ int main() {
             }
         }
 
-        bool validEmail = false;
-        while (!validEmail) {
-            cout << "\nEnter the email of the student: ";
-            cin >> data[i].email;
+bool validEmail = false;
+while (!validEmail) {
+    cout << "\nEnter the college email (name.surname@vit.edu): ";
+    cin >> data[i].email;
 
-            char sum[100] = "";
-            int k = 0;
-            int len = strlen(data[i].email);
-            if(len < 8) {
-                cout << "Invalid email. Please enter a valid email.\n";
-                continue; 
-            }
+    int len = strlen(data[i].email);
+    if (len < 13) { 
+        cout << "Invalid email. Too short.\n";
+        continue;
+    }
 
-            for(int j = 8; j > 0; j--) {
-                sum[k++] = data[i].email[len - j];
-            }
-            sum[k] = '\0';
-
-            if(strcmp(sum, "@vit.edu") != 0) {
-                cout << "Invalid email domain. Please enter a valid email with @vit.edu domain.\n";
-            } else {
-                validEmail = true;
-            }
+    bool endsWithVit = true;
+    const char* suffix = "@vit.edu";
+    for (int j = 0; j < 8; j++) {
+        if (data[i].email[len - 8 + j] != suffix[j]) {
+            endsWithVit = false;
+            break;
         }
+    }
+
+    if (!endsWithVit) {
+        cout << "Invalid email. Must end with @vit.edu\n";
+        continue;
+    }
+
+    int atCount = 0;
+    int atIndex = -1;
+    for (int j = 0; j < len; j++) {
+        if (data[i].email[j] == '@') {
+            atCount++;
+            atIndex = j;
+        }
+    }
+
+    if (atCount != 1 || atIndex < 3) {
+        cout << "Invalid email. Must contain one '@' and a valid name before it.\n";
+        continue;
+    }
+
+    bool hasDot = false;
+    for (int j = 0; j < atIndex; j++) {
+        if (data[i].email[j] == '.') {
+            hasDot = true;
+            break;
+        }
+    }
+
+    if (!hasDot) {
+        cout << "Invalid email. Must be in format name.surname@vit.edu\n";
+        continue;
+    }
+
+    for (int j = 0; j < atIndex; j++) {
+        if (data[i].email[j] == '.') {
+            data[i].name[j] = '_';
+        } else {
+            data[i].name[j] = data[i].email[j];
+        }
+    }
+    data[i].name[atIndex] = '\0';
+    validEmail = true;
+        for(int k = 0;k<i+1;k++){
+            for(int p = 1;p<=i+1;p++){
+                    if((!strcmp(data[k].email,data[p].email))&& k!= p){
+                        cout << "Repeated email. Please enter a unique email.\n";
+                        validEmail = false;
+                        break;
+                    }
+                }
+            }
+}
+
+
 
         bool validNumber = false;
         while (!validNumber) {
@@ -94,6 +166,16 @@ int main() {
                         cout << "Invalid mobile number. Please enter a valid mobile number.\n";
                         validNumber = false;
                         break;
+                    }
+                }
+                for(int k = 0;k<i+1;k++){
+                    for(int p = 1;p<=i+1;p++){
+                        if((!strcmp(data[k].number,data[p].number))&& k!= p){
+                            cout << "Repeated number. Please enter a unique number.\n";
+                            validNumber = false;
+                            break;
+                        }
+                        
                     }
                 }
             }
