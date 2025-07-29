@@ -82,54 +82,72 @@ int main() {
 
         // Email validation
         bool validEmail = false;
-        while (!validEmail) {
-            cout << "\nEnter the college email (name.surname@vit.edu): ";
-            cin >> data[i].email;
-
-            int len = strlen(data[i].email);
-            if (len < 13) {
-                cout << "Invalid email. Too short.\n";
-                continue;
+        char Email[100];
+        strcpy(Email,data[i].email);
+ while (!validEmail) {
+        cout << "\nEnter email: ";
+        cin >> Email;
+        int len = strlen(Email);
+        validEmail = true;
+        for(int i = 0; i < len; i++){
+            if(Email[i]=='('||Email[i]==')'||Email[i]=='#'||Email[i]=='['||Email[i]==']'||Email[i]=='\''||Email[i]==';'||Email[i]==':'||Email[i]==','||Email[i]=='<'||Email[i]=='>'||Email[i]=='"'){
+                cout << " Invalid email: contains illegal characters.\n";
+                validEmail = false;
+                break;
             }
+        }
+        if (len < 9 || strcmp(Email + len - 8, "@vit.edu") != 0) {
+            cout << " Invalid email format: Must end with @vit.edu\n";
+            validEmail = false;
+            continue;
+        }
 
-            // Check if ends with @vit.edu
-            const char* suffix = "@vit.edu";
-            bool endsWithVit = strcmp(data[i].email + len - 8, suffix) == 0;
+        if (Email[0] == '.') {
+            cout << " Email can't start or end with a dot.\n";
+            validEmail = false;
+            continue;
+        }
 
-            if (!endsWithVit) {
-                cout << "Invalid email. Must end with @vit.edu\n";
-                continue;
+        for (int i = 0; i < len - 1; i++) {
+            if (Email[i] == '.' && Email[i + 1] == '.') {
+                cout << " Invalid email: consecutive dots found.\n";
+                validEmail = false;
+                break;
             }
+        }
+        if (!validEmail) continue;
 
-            // Check for only one '@'
-            int atCount = 0;
-            int atIndex = -1;
-            for (int j = 0; j < len; j++) {
-                if (data[i].email[j] == '@') {
-                    atCount++;
-                    atIndex = j;
-                }
+        int atCount = 0, atPos = -1;
+        for (int i = 0; i < len; i++) {
+            if (Email[i] == '@') {
+                atCount++;
+                atPos = i;
             }
-
-            if (atCount != 1 || atIndex < 3) {
-                cout << "Invalid email. Must contain one '@' and valid name before it.\n";
-                continue;
-            }
-
-            // Check if it has a dot before '@'
-            bool hasDot = false;
-            for (int j = 0; j < atIndex; j++) {
-                if (data[i].email[j] == '.') {
-                    hasDot = true;
+            if(atPos&&atPos!=-1)
+                if(Email[atPos-1] == '.'){
+                    cout << " Invalid email: dot found just before @.\n";
+                    validEmail = false;
                     break;
                 }
-            }
+        }
+        if (atCount != 1) {
+            cout << " Email must contain exactly one '@' symbol.\n";
+            validEmail = false;
+            continue;
+        }
 
-            if (!hasDot) {
-                cout << "Invalid email. Must be in format name.surname@vit.edu\n";
-                continue;
+        bool dotAfterAt = false;
+        for (int i = atPos + 1; i < len; i++) {
+            if (Email[i] == '.') {
+                dotAfterAt = true;
+                break;
             }
-
+        }
+        if (!dotAfterAt) {
+            cout << " Email must contain at least one '.' after '@'.\n";
+            validEmail = false;
+            continue;
+        }
             // Duplicate email check
             validEmail = true;
             for(int k = 0; k < i; k++) {
@@ -188,4 +206,3 @@ int main() {
 
     return 0;
 }
-    
